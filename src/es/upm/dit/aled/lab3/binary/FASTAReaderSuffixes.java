@@ -1,5 +1,6 @@
 package es.upm.dit.aled.lab3.binary;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -78,8 +79,49 @@ public class FASTAReaderSuffixes extends FASTAReader {
 	 */
 	@Override
 	public List<Integer> search(byte[] pattern) {
-		// TODO
-		return null;
+
+		List<Integer> match = new ArrayList<>();
+		
+		int lo = 0;
+		int hi = suffixes.length-1;
+		
+		boolean found = false;
+		
+		int index = 0;
+		
+		for (int i = 0, i < ) {
+			Suffix posSuffix = suffixes[m];
+			
+		}
+		
+		2. Comparación iterativa (bucle de búsqueda binaria): En cada iteración, calcula el
+		índice medio (m) en el rango de búsqueda actual.
+		
+			Extrae la posición del sufijo que se encuentra en suffixes[m] (a la que llamaremos
+		posSuffix) y comienza a comparar el pattern con este sufijo carácter por carácter,
+		comenzando por pattern[index].
+		
+			Continuación de la coincidencia: Si los caracteres actuales coinciden (es decir, si
+		pattern[index] == content[posSuffix + index]), incrementa index para verifi-
+		car el siguiente carácter en la próxima iteración.
+		
+			Coincidencia completa encontrada: Si la comparación llega al final del patrón
+		(index == pattern.length) y los últimos caracteres también coinciden, entonces se
+		ha encontrado una coincidencia. La posición inicial (posSuffix) se guarda en la lista
+		de resultados a devolver y found se pone a true.
+		
+			División estándar de búsqueda binaria:Si el principio del sufijo de suffixes[m]
+		no coincide con el patrón:
+			
+				• Si el carácter del pattern es lexicográficamente anterior al carácter del sufijo
+		(pattern[index] <content[posSuffix + index]), se descarta la mitad dere-
+		cha de suffixes estableciendo hi = m–-, y se reinicia el contador (index = 0).
+		
+				• Si el carácter del pattern es lexicográficamente posterior al carácter del sufi-
+		jo (pattern[index] >content[posSuffix + index]), se descarta la mitad iz-
+		quierda de suffixes, estableciendo lo = m++, y se reinicia el contador (index =
+		0).
+		
 	}
 
 	public static void main(String[] args) {
