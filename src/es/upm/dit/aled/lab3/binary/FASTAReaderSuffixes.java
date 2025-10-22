@@ -87,42 +87,74 @@ public class FASTAReaderSuffixes extends FASTAReader {
 		
 		boolean found = false;
 		
-		int index = 0;
 		
-		for (int i = 0, i < ) {
-			Suffix posSuffix = suffixes[m];
+		while(!found && lo <= hi){
+			
+			int index = 0;
+			int m = (lo+hi)/2;
+			int posSuffix = suffixes[m].suffixIndex;
+			
+			while(index < pattern.length &&
+				  posSuffix + index < content.length &&
+				  pattern[index] == content[posSuffix + index]) {
+				index++;
+			}
+			
+			if(index == pattern.length) {
+				found = true;
+				match.add(posSuffix);
+		
+				int left = m-1;
+			
+				while (left >= 0) {
+					int leftPos = suffixes[left].suffixIndex;
+					int leftIndex = 0;
+					while (leftIndex < pattern.length &&
+							leftPos + leftIndex < validBytes &&
+							pattern[leftIndex] == content[leftPos + leftIndex]) {
+						leftIndex++;
+					}
+					if(leftIndex == pattern.length) {
+						match.add(leftPos);
+						left--;
+					}else break;
+				}
+			
+				int right = m+1;
+			
+				while(right < suffixes.length) {
+					int rightPos = suffixes[right].suffixIndex;
+					int rightIndex = 0;
+					while (rightIndex < pattern.length &&
+							rightPos + rightIndex < validBytes &&
+							pattern[rightIndex] == content[rightPos + rightIndex]) {
+						rightIndex++;
+					}
+					if(rightIndex == pattern.length) {
+						match.add(rightPos);
+						right++;
+					}else break;
+				}
+			
+			break;
+			
+			}
+			
+			if (index < pattern.length) {
+				if (pattern[index] < content[posSuffix + index]) {
+					hi = m-1;
+					index = 0;
+				}
+				else {
+					lo = m+1;
+				}
+			}	
 			
 		}
 		
-		2. Comparación iterativa (bucle de búsqueda binaria): En cada iteración, calcula el
-		índice medio (m) en el rango de búsqueda actual.
-		
-			Extrae la posición del sufijo que se encuentra en suffixes[m] (a la que llamaremos
-		posSuffix) y comienza a comparar el pattern con este sufijo carácter por carácter,
-		comenzando por pattern[index].
-		
-			Continuación de la coincidencia: Si los caracteres actuales coinciden (es decir, si
-		pattern[index] == content[posSuffix + index]), incrementa index para verifi-
-		car el siguiente carácter en la próxima iteración.
-		
-			Coincidencia completa encontrada: Si la comparación llega al final del patrón
-		(index == pattern.length) y los últimos caracteres también coinciden, entonces se
-		ha encontrado una coincidencia. La posición inicial (posSuffix) se guarda en la lista
-		de resultados a devolver y found se pone a true.
-		
-			División estándar de búsqueda binaria:Si el principio del sufijo de suffixes[m]
-		no coincide con el patrón:
-			
-				• Si el carácter del pattern es lexicográficamente anterior al carácter del sufijo
-		(pattern[index] <content[posSuffix + index]), se descarta la mitad dere-
-		cha de suffixes estableciendo hi = m–-, y se reinicia el contador (index = 0).
-		
-				• Si el carácter del pattern es lexicográficamente posterior al carácter del sufi-
-		jo (pattern[index] >content[posSuffix + index]), se descarta la mitad iz-
-		quierda de suffixes, estableciendo lo = m++, y se reinicia el contador (index =
-		0).
-		
+		return match;
 	}
+		
 
 	public static void main(String[] args) {
 		long t1 = System.nanoTime();

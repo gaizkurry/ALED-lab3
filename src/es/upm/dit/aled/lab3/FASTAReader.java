@@ -162,13 +162,13 @@ public class FASTAReader {
 		if (position + pattern.length > validBytes) {
 			throw new FASTAException("Pattern goes beyond the end of the file.");
 		}
-		int missmatch = 0;
+		int mismatch = 0;
 		for (int i = 0; i < pattern.length; i++) {
 			if (pattern[i] != content[position + i]) {
-				missmatch ++;
+				mismatch ++;
 			}
 		}
-		return missmatch;
+		return mismatch;
 	}
 
 	/**
