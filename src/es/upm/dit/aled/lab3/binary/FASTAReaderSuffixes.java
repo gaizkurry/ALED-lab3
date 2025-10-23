@@ -78,83 +78,125 @@ public class FASTAReaderSuffixes extends FASTAReader {
 	 *         pattern in the data.
 	 */
 	@Override
+	
+	/*
+	// ONLY ONE MATCH
 	public List<Integer> search(byte[] pattern) {
 
-		List<Integer> match = new ArrayList<>();
-		
-		int lo = 0;
-		int hi = suffixes.length-1;
-		
-		boolean found = false;
-		
-		
-		while(!found && lo <= hi){
-			
-			int index = 0;
-			int m = (lo+hi)/2;
-			int posSuffix = suffixes[m].suffixIndex;
-			
-			while(index < pattern.length &&
-				  posSuffix + index < content.length &&
-				  pattern[index] == content[posSuffix + index]) {
-				index++;
-			}
-			
-			if(index == pattern.length) {
-				found = true;
-				match.add(posSuffix);
-		
-				int left = m-1;
-			
-				while (left >= 0) {
-					int leftPos = suffixes[left].suffixIndex;
-					int leftIndex = 0;
-					while (leftIndex < pattern.length &&
-							leftPos + leftIndex < validBytes &&
-							pattern[leftIndex] == content[leftPos + leftIndex]) {
-						leftIndex++;
-					}
-					if(leftIndex == pattern.length) {
-						match.add(leftPos);
-						left--;
-					}else break;
-				}
-			
-				int right = m+1;
-			
-				while(right < suffixes.length) {
-					int rightPos = suffixes[right].suffixIndex;
+	    List<Integer> match = new ArrayList<>();
+	    
+	    int lo = 0;
+	    int hi = suffixes.length - 1;
+	    boolean found = false;
+	    
+
+	    while ((hi - lo) > 1 && found == false) {
+	        int m = lo + (hi-lo)/2;
+	        int posSuffix = suffixes[m].suffixIndex;
+	        int index = 0;
+
+	        while (index < pattern.length &&
+	               posSuffix + index < content.length &&
+	               pattern[index] == content[posSuffix + index]) {
+	            index++;
+	        }
+
+	        if (index == pattern.length) {
+	            match.add(posSuffix);
+	            return match;
+	        }
+	        
+	        if(pattern[index]<content[posSuffix+index]) {
+	        	hi=m--;
+	        	index=0;
+	        }
+	        
+	        if(pattern[index]>content[posSuffix+index]) {
+	        	lo=m++;
+	        	index=0;
+	        }
+	        
+	    }
+
+	    return match;
+	}
+	*/
+	
+
+	public List<Integer> search(byte[] pattern) {
+
+	    List<Integer> match = new ArrayList<>();
+	    
+	    int lo = 0;
+	    int hi = suffixes.length - 1;
+	    boolean found = false;
+	    
+
+	    while ((hi - lo) > 1 && found == false) {
+	        int m = lo + (hi-lo)/2;
+	        int posSuffix = suffixes[m].suffixIndex;
+	        int index = 0;
+
+	        while (index < pattern.length &&
+	               posSuffix + index < content.length &&
+	               pattern[index] == content[posSuffix + index]) {
+	            index++;
+	        }
+
+	        if (index == pattern.length) {
+	            match.add(posSuffix);
+	            found = true;
+	            
+	            int left = m-1;
+	            while(left>=0) {
+	            	int leftSuf = suffixes[left].suffixIndex;
+	    			int leftIndex = 0;
+	    			while (leftIndex < pattern.length &&
+	    					leftSuf + leftIndex < content.length &&
+	    					pattern[leftIndex] == content[leftSuf + leftIndex]) {
+	    				leftIndex++;
+	    			}
+	    			if(leftIndex == pattern.length) {
+	    				match.add(leftSuf);
+	    				left--;
+	    			}else {
+	    				break;
+	    			}
+	            }
+	            
+	            int right = m+1;
+	            while(right<suffixes.length) {
+	            	int rightSuf = suffixes[right].suffixIndex;
 					int rightIndex = 0;
 					while (rightIndex < pattern.length &&
-							rightPos + rightIndex < validBytes &&
-							pattern[rightIndex] == content[rightPos + rightIndex]) {
+							rightSuf + rightIndex < content.length &&
+							pattern[rightIndex] == content[rightSuf + rightIndex]) {
 						rightIndex++;
 					}
 					if(rightIndex == pattern.length) {
-						match.add(rightPos);
+						match.add(rightSuf);
 						right++;
-					}else break;
-				}
+					}else {
+						break;
+					}
+	            }		
 			
-			break;
-			
-			}
-			
-			if (index < pattern.length) {
-				if (pattern[index] < content[posSuffix + index]) {
-					hi = m-1;
-					index = 0;
-				}
-				else {
-					lo = m+1;
-				}
-			}	
-			
-		}
-		
-		return match;
-	}
-		
+	            return match;	
+	        }
+	        
+	        if(pattern[index]<content[posSuffix+index]) {
+	        	hi=m--;
+	        	index=0;
+	        }
+	        if(pattern[index]>content[posSuffix+index]) {
+	        	lo=m++;
+	        	index=0;
+	        }
+	    }
+	        return match;
+	        
+	    }
+	    
 
 	public static void main(String[] args) {
 		long t1 = System.nanoTime();
